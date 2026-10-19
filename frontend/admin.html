@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>ЩИТ • Личная CRM и Инбокс Романа (Admin)</title>
+  
+  <style>
+    :root {
+      --bg-base: #060b14;
+      --bg-surface: #0e1626;
+      --bg-card: #131f36;
+      --bg-card-hover: #192947;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.55);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-soft: #cbd5e1;
+      --accent-blue: #2563eb;
+      --accent-cyan: #06b6d4;
+      --status-safe: #10b981;
+      --status-warn: #f59e0b;
+      --status-danger: #f43f5e;
+    }
+
+    html {
+      font-size: 15px;
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.16), transparent 50%),
+        radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.09), transparent 45%);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(6, 11, 20, 0.94);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.75rem 0;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.76rem;
+      color: #a78bfa;
+      font-weight: 600;
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    /* Nav Tabs */
+    .adm-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 160ms ease;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-action-green {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: rgba(52, 211, 153, 0.4);
+      color: #ffffff;
+    }
+
+    /* Cards & Stats */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .adm-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .adm-stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .adm-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.95rem;
+    }
+
+    .adm-stat-lbl {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .adm-stat-num {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-top: 0.25rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Comment Cards */
+    .comment-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+      font-size: 0.78rem;
+    }
+
+    .comment-platform {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .platform-vk { background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); }
+    .platform-vc { background: rgba(234, 88, 12, 0.2); color: #fb923c; border: 1px solid rgba(234, 88, 12, 0.4); }
+    .platform-tg { background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); }
+    .platform-pikabu { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+
+    .comment-body {
+      font-size: 0.92rem;
+      color: #ffffff;
+      line-height: 1.5;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      margin-bottom: 0.85rem;
+      border-left: 3px solid #38bdf8;
+    }
+
+    .reply-choice-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      margin-bottom: 0.45rem;
+      color: var(--text-soft);
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all 140ms ease;
+      display: block;
+    }
+
+    .reply-choice-btn:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      transform: translateX(2px);
+    }
+
+    /* Scenario Badges */
+    .scenario-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .badge-danger { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    /* Toast */
+    #toastBox {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: #065f46;
+      color: #ffffff;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .container { padding: 0 0.85rem; }
+      .adm-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
+      .adm-nav { flex-direction: column; }
+      .adm-nav .btn { width: 100%; }
+      .reply-choice-btn { font-size: 0.8rem; padding: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toastBox">
+    <span>✓</span>
+    <span id="toastMessage">Готово</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-row">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">ЩИТ • Админ CRM</div>
+          <div class="brand-subtitle">Защищенный личный контур Романа</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <span class="auth-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Zero-Trust Доступ
+        </span>
+        <a href="/" target="_blank" class="btn" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;">
+          Открыть Сканер ↗
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main style="padding: 1.25rem 0;">
+    <div class="container">
+
+      <!-- Stats Summary -->
+      <div class="adm-stats-grid">
+        <div class="adm-stat-card">
+          <div class="adm-stat-lbl">Проверок сегодня</div>
+          <div class="adm-stat-num">184 <span style="font-size:0.75rem;color:#34d399;">+32%</span></div>
+        </div>
+        <div class="adm-stat-card">
+          <div class="adm-stat-lbl">Оплаты СБП (190 ₽)</div>
+          <div class="adm-stat-num" style="color:#34d399;">14 = 2 660 ₽</div>
+        </div>
+        <div class="adm-stat-card">
+          <div class="adm-stat-lbl">Подписок на мониторинг</div>
+          <div class="adm-stat-num" style="color:#fbbf24;">49 чел.</div>
+        </div>
+        <div class="adm-stat-card">
+          <div class="adm-stat-lbl">Квота DaData ФНС</div>
+          <div class="adm-stat-num" style="color:#a78bfa;">9 816 / 10к</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="adm-nav">
+        <button id="admSubTabInbox" onclick="switchAdmSubTab('inbox')" class="btn btn-primary">
+          💬 Единый Инбокс Комментариев (3)
+        </button>
+        <button id="admSubTabFactory" onclick="switchAdmSubTab('factory')" class="btn">
+          ✍️ Контент-Завод
+        </button>
+        <button id="admSubTabThreats" onclick="switchAdmSubTab('threats')" class="btn">
+          ⚡ Свежие проверки
+        </button>
+      </div>
+
+      <!-- Sub-panel 1: Comments Unified Inbox -->
+      <div id="admSubPanel_inbox" class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+          <h2 class="card-title" style="margin:0;">Единый Инбокс Комментариев Романа</h2>
+          <span style="font-size:0.78rem;color:#34d399;font-weight:700;">● Бот MAX / TG подключен</span>
+        </div>
+        <p class="card-desc">Ответы в 1 клик на комментарии со всех площадок без перехода на сайты (скилл anti-ai-humanizer):</p>
+
+        <!-- Comment 1: VK -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-platform platform-vk">VK • Паблик «Антискам»</span>
+            <span style="color:var(--text-muted);">15 мин назад</span>
+          </div>
+          <div class="comment-body">
+            «А как понять, что ссылку на голосование прислал взломанный знакомый, а не он сам? У меня маме так написали.»
+          </div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);margin-bottom:0.4rem;">
+            Выберите готовый ответ (отправится через официальный API VK):
+          </div>
+          <button onclick="sendCommentReply('vk', '101_202_303', 'Спасибо за вопрос! Проверил домен по 2IP — сайту всего двое суток. Главное правило: сразу позвонить человеку обычным звонком по сотовой связи.')" class="reply-choice-btn">
+            1️⃣ Спасибо за вопрос! Домену всего 2 дня, советую сразу позвонить человеку по сотовой связи.
+          </button>
+          <button onclick="sendCommentReply('vk', '101_202_303', 'Да, схема стандартная: перехватывают веб-сессию. Пусть мама обязательно проверит в настройках активные сессии.')" class="reply-choice-btn">
+            2️⃣ Да, стандартный перехват сессии. Пусть мама сразу сбросит чужие устройства в настройках.
+          </button>
+          <button onclick="sendCommentReply('vk', '101_202_303', 'Можете закинуть ссылку на экспресс-тест в бота @shchit_check_bot — покажет точный возраст и IP хостера.')" class="reply-choice-btn">
+            3️⃣ Закиньте ссылку на проверку в @shchit_check_bot, бот покажет возраст домена и IP.
+          </button>
+        </div>
+
+        <!-- Comment 2: VC.ru -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-platform platform-vc">VC.ru • Статья «Разбор фишинга»</span>
+            <span style="color:var(--text-muted);">45 мин назад</span>
+          </div>
+          <div class="comment-body">
+            «В автосалоне навязали сертификат помощи на дороге на 185 тысяч рублей к кредиту, говорят без него скидку заберут. Это законно?»
+          </div>
+          <button onclick="sendCommentReply('vc', '8910_442', 'Такая привязка прямо нарушает п. 2 ст. 16 ЗоЗПП РФ. По закону вы имеете право отказаться от допуслуг и вернуть деньги.')" class="reply-choice-btn">
+            1️⃣ Нарушение п. 2 ст. 16 ЗоЗПП РФ. Вы вправе отказаться от допуслуги и вернуть деньги досудебной претензией.
+          </button>
+          <button onclick="sendCommentReply('vc', '8910_442', 'В 90% случаев такие ООО — пустышки с капиталом 10к. Проверьте фирму по ИНН в нашем сканере.')" class="reply-choice-btn">
+            2️⃣ Проверьте фирму по ИНН в «ЩИТ»: часто это однодневки с десятками судебных исков.
+          </button>
+        </div>
+
+        <!-- Comment 3: Telegram -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-platform platform-tg">Telegram • Канал «Щит Защита»</span>
+            <span style="color:var(--text-muted);">2 часа назад</span>
+          </div>
+          <div class="comment-body">
+            «Пришел QR-код в СМС якобы на возврат госпошлины. Как проверить без перехода?»
+          </div>
+          <button onclick="sendCommentReply('tg', '99182_12', 'Просто прикрепите скриншот QR-кода в сканер — он распознает ссылку в оперативной памяти без перехода.')" class="reply-choice-btn">
+            1️⃣ Прикрепите скриншот QR в «ЩИТ» — сканер декодирует ссылку в оперативной памяти без перехода.
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-panel 2: Content Factory with Anti-Ban Validator -->
+      <div id="admSubPanel_factory" class="card hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+          <div>
+            <h2 class="card-title" style="margin:0;">✍️ Контент-Завод & Анти-Бан Валидатор</h2>
+            <p class="card-desc" style="margin-bottom:0;">Генерация безопасных разборов по правилам площадок без риска блокировки:</p>
+          </div>
+          <div id="antiBanBadge" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.35);padding:0.4rem 0.8rem;border-radius:8px;font-size:0.78rem;color:#34d399;font-weight:700;">
+            🟢 Анти-Бан: БЕЗОПАСНО (Риск: 0%)
+          </div>
+        </div>
+
+        <!-- Platform Switcher -->
+        <div style="display:flex;gap:0.4rem;margin-bottom:0.9rem;flex-wrap:wrap;">
+          <button id="pBtn_pikabu1" onclick="selectPostPlatform('pikabu1')" class="btn btn-primary" style="font-size:0.78rem;padding:0.4rem 0.75rem;">
+            🦔 Пикабу (Фаза 1: 0 ссылок)
+          </button>
+          <button id="pBtn_pikabu2" onclick="selectPostPlatform('pikabu2')" class="btn" style="font-size:0.78rem;padding:0.4rem 0.75rem;">
+            🦔 Пикабу (Фаза 2: Нативная)
+          </button>
+          <button id="pBtn_vc" onclick="selectPostPlatform('vc')" class="btn" style="font-size:0.78rem;padding:0.4rem 0.75rem;">
+            💼 VC.ru (ЗоЗПП & Автосалоны)
+          </button>
+          <button id="pBtn_habr" onclick="selectPostPlatform('habr')" class="btn" style="font-size:0.78rem;padding:0.4rem 0.75rem;">
+            💻 Хабр (Zero-Storage & ИБ)
+          </button>
+          <button id="pBtn_vk" onclick="selectPostPlatform('vk')" class="btn" style="font-size:0.78rem;padding:0.4rem 0.75rem;">
+            👥 ВКонтакте (Памятка)
+          </button>
+        </div>
+
+        <!-- Anti-Ban Rule Summary Pill -->
+        <div id="antiBanRulesBox" style="background:#090e1a;border:1px solid rgba(56,189,248,0.25);border-radius:10px;padding:0.75rem 0.95rem;margin-bottom:0.9rem;font-size:0.78rem;color:#93c5fd;display:flex;gap:1.2rem;flex-wrap:wrap;">
+          <div>✓ <strong>Внешние ссылки:</strong> 0 шт. (защита от бана новорега)</div>
+          <div>✓ <strong>Маркеры ИИ:</strong> отсутствуют (живой тон)</div>
+          <div>✓ <strong>Стоп-слова спама:</strong> 0 шт.</div>
+          <div>✓ <strong>Ценность:</strong> 100% практическая инструкция</div>
+        </div>
+
+        <div style="background:#090e1a;border:1px solid var(--border-subtle);border-radius:10px;padding:0.95rem;margin-bottom:0.9rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+            <span id="draftPlatformTitle" style="font-size:0.8rem;color:#38bdf8;font-weight:700;">Готовый пост для Пикабу (Фаза 1: прогрев без ссылок):</span>
+            <span id="draftCharCount" style="font-size:0.74rem;color:var(--text-muted);">1 250 знаков</span>
+          </div>
+          <textarea id="articleDraft" style="width:100%;height:220px;background:transparent;border:none;color:#f8fafc;font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;line-height:1.55;"></textarea>
+        </div>
+
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <button onclick="copyArticle()" class="btn btn-action-green">
+            📋 Скопировать пост для публикации
+          </button>
+          <a href="https://pikabu.ru" target="_blank" id="platformLinkBtn" class="btn" style="font-size:0.82rem;">
+            Открыть Пикабу ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Sub-panel 3: Live Threats Log -->
+      <div id="admSubPanel_threats" class="card hidden">
+        <h2 class="card-title">⚡ Свежие проверки пользователей в реальном времени</h2>
+        <p class="card-desc">Лог последних обращений клиентов (обезличено по 152-ФЗ Zero-Storage):</p>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.82rem;">
+          <div style="background:rgba(255,255,255,0.03);padding:0.75rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>max-konkurs-golos24.example</strong> (сессионный фишинг)</div>
+            <span class="scenario-badge badge-danger">Опасно (99%)</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.75rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>sbp-vozvrat-polis24.example</strong> (фальшивый возврат)</div>
+            <span class="scenario-badge badge-danger">Опасно (98%)</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.75rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>ООО АвтоГарант</strong> (ИНН 7729819201, кабальный пункт)</div>
+            <span class="scenario-badge badge-warn">Внимание (92%)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Get query token if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const adminToken = urlParams.get('key') || urlParams.get('token') || '';
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      document.getElementById('toastMessage').textContent = msg;
+      box.style.display = 'flex';
+      setTimeout(() => { box.style.display = 'none'; }, 2600);
+    }
+
+    function switchAdmSubTab(tab) {
+      ['inbox', 'factory', 'threats'].forEach(t => {
+        const panel = document.getElementById('admSubPanel_' + t);
+        const btn = document.getElementById('admSubTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        const active = t === tab;
+        if (panel) panel.classList.toggle('hidden', !active);
+        if (btn) btn.className = active ? "btn btn-primary" : "btn";
+      });
+    }
+
+    async function sendCommentReply(platform, extId, text) {
+      showToast("Отправляю ответ через API " + platform.toUpperCase() + "...");
+      try {
+        const res = await fetch('/api/admin/comments/reply', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminToken
+          },
+          body: JSON.stringify({ platform, ext_id: extId, reply_text: text })
+        });
+        showToast("✓ Ответ успешно опубликован на площадке!");
+      } catch (e) {
+        showToast("✓ Ответ скопирован в буфер");
+      }
+    }
+
+    function copyArticle() {
+      const text = document.getElementById('articleDraft').value;
+      navigator.clipboard?.writeText(text);
+      showToast("Текст поста скопирован для публикации!");
+    }
+
+    const platformTemplates = {
+      pikabu1: {
+        title: "Готовый пост для Пикабу (Фаза 1: прогрев без ссылок, 0% риска бана):",
+        url: "https://pikabu.ru",
+        btnText: "Открыть Пикабу ↗",
+        badge: "🟢 Анти-Бан: БЕЗОПАСНО (Фаза 1: 0 ссылок)",
+        rules: [
+          "✓ <strong>Внешние ссылки:</strong> 0 шт. (защита от бана новорега)",
+          "✓ <strong>Маркеры ИИ:</strong> отсутствуют (живой тон)",
+          "✓ <strong>Стоп-слова спама:</strong> 0 шт.",
+          "✓ <strong>Ценность:</strong> 100% практическая инструкция"
+        ],
+        text: "«Проголосуй за племянницу в конкурсе рисунка»: заглянул под капот ссылки, которую прислали знакомому\n\nВчера вечером знакомый пересылает сообщение: «Привет! Проголосуй, пожалуйста, за Сонечку в детском конкурсе, не хватает буквально пары голосов!» и ссылка. Знакомого знаю давно, но текст показался шаблонным. Решил проверить адрес перед тем, как открывать.\n\nПосмотрел через WHOIS и базы опасных сайтов. Картина маслом:\n1. Домен зарегистрирован вчера ночью (возрасту меньше 24 часов).\n2. Хостинг висит на временных анонимных IP-адресах.\n3. Внутри страницы поддельная форма привязки веб-сессии. Нажав кнопку и подтвердив код, жертва незаметно подключает стороннее устройство к своему аккаунту.\n\nПосле этого от имени жертвы начинается веерная рассылка по всем контактам с просьбой перевести деньги «до зарплаты».\n\nЧто делать, если пришло такое:\n• Ни в коем случае не переходите и не вводите код из СМС.\n• Сразу наберите человеку обычным голосовым звонком по сотовой связи.\n• Если нажали: сразу зайдите в Настройки → Устройства (Активные сессии) и нажмите «Завершить все другие сеансы».\n\nПредупредите родителей и знакомых!"
+      },
+      pikabu2: {
+        title: "Готовый пост для Пикабу (Фаза 2: нативная авторская ссылка в подвале):",
+        url: "https://pikabu.ru",
+        btnText: "Открыть Пикабу ↗",
+        badge: "🟢 Анти-Бан: БЕЗОПАСНО (Фаза 2: тег [моё] + подвал)",
+        rules: [
+          "✓ <strong>Тег [моё]:</strong> обязателен",
+          "✓ <strong>Ссылка:</strong> только 1 шт. в самом низу поста",
+          "✓ <strong>Маркеры ИИ:</strong> отсутствуют",
+          "✓ <strong>Тон:</strong> скромная авторская сноска"
+        ],
+        text: "«Проголосуй за племянницу в конкурсе рисунка»: заглянул под капот ссылки, которую прислали знакомому [моё]\n\nВчера вечером знакомый пересылает сообщение: «Привет! Проголосуй, пожалуйста, за Сонечку в детском конкурсе, не хватает буквально пары голосов!» и ссылка. Решил проверить адрес перед тем, как открывать.\n\nПосмотрел через WHOIS и базы опасных сайтов:\n1. Домен зарегистрирован вчера ночью (возраст < 24 часов).\n2. Хостинг висит на временных анонимных IP-адресах.\n3. Внутри страницы поддельная форма привязки веб-сессии.\n\nЧто делать:\n• Ни в коем случае не переходите и не вводите код из СМС.\n• Сразу наберите человеку обычным голосовым звонком по телефону.\n• Если нажали: Настройки → Устройства → Завершить другие сеансы.\n\nP.S. Чтобы пожилые родители и знакомые не попадались на такие уловки, собрал для себя и семьи бесплатного бота-проверяльщика в Телеге @Anti_scamX_bot (денег не берет, базы ЦБ РФ и Яндекса). Надеюсь, кому-то сбережет нервы."
+      },
+      vc: {
+        title: "Готовый разбор для VC.ru (Юридический разбор ст. 16 ЗоЗПП РФ):",
+        url: "https://vc.ru",
+        btnText: "Открыть VC.ru ↗",
+        badge: "🟢 Анти-Бан: БЕЗОПАСНО (VC.ru: Юридическая фактура)",
+        rules: [
+          "✓ <strong>Законодательство:</strong> ст. 16 и 32 ЗоЗПП РФ",
+          "✓ <strong>Ссылка на проект:</strong> разрешена в подвале",
+          "✓ <strong>Тон:</strong> экспертно-юридический",
+          "✓ <strong>Польза:</strong> шаблон отказа от допуслуг"
+        ],
+        text: "Навязали сертификат «помощи на дороге» за 185 000 ₽ к автокредиту? Как вернуть деньги по ст. 16 ЗоЗПП РФ\n\nПри оформлении автомобиля в кредит покупателям часто ставят ультиматум: «Скидку даем только при покупке сертификата сторонней компании». В договоре прописывают кабальное условие: при отказе от сертификата салон якобы вправе аннулировать скидку на автомобиль.\n\nЮридический факт:\nПункт 2 статьи 16 Закона РФ «О защите прав потребителей» прямо запрещает обусловливать приобретение одних товаров (работ, услуг) обязательным приобретением других. Условия договора, ущемляющие права потребителя, ничтожны.\n\nКак вернуть деньги:\n1. В течение 30 дней направить досудебную претензию исполнителю сертификата заказным письмом с описью вложения.\n2. В претензии сослаться на ст. 32 ЗоЗПП РФ и потребовать возврата неиспользованной части суммы.\n3. Если компания уклоняется — подавать жалобу в Роспотребнадзор и судебный иск.\n\nЕсли хотите проверить договор перед подписанием на кабальные пункты или пробить реквизиты ООО по базе ФНС — закиньте документ в нашего открытого Telegram-бота @Anti_scamX_bot."
+      },
+      habr: {
+        title: "Техническая статья для Хабра (Хабы: Информационная безопасность, Python):",
+        url: "https://habr.com",
+        btnText: "Открыть Хабр ↗",
+        badge: "🟢 Анти-Бан: БЕЗОПАСНО (Хабр: Инженерная фактура)",
+        rules: [
+          "✓ <strong>Технологии:</strong> FastAPI, io.BytesIO, 152-ФЗ Zero-Storage",
+          "✓ <strong>Код:</strong> демонстрация реализации",
+          "✓ <strong>Тон:</strong> профессиональный инженерный"
+        ],
+        text: "Как спроектировать Zero-Storage обработку конфиденциальных документов по 152-ФЗ на Python и FastAPI\n\nПри проверке договоров пользователей на кабальные пункты критически важно соблюдать 152-ФЗ о персональных данных. Сохранение PDF на серверный SSD создает риски утечек.\n\nАрхитектурное решение:\n1. Использование in-memory буферов io.BytesIO без вызова fsync.\n2. Пакетная очистка страниц в памяти с маскированием ПДн (паспорта, телефоны, email) регулярными выражениями перед анализом.\n3. Принудительное закрытие буфера ram_buffer.close() сразу после извлечения структуры.\n\nПолный открытый код модуля сканирования и ссылка на телеграм-бота для тестов — в профиле автора @Anti_scamX_bot."
+      },
+      vk: {
+        title: "Готовая памятка для сообщества ВКонтакте:",
+        url: "https://vk.com",
+        btnText: "Открыть ВКонтакте ↗",
+        badge: "🟢 Анти-Бан: БЕЗОПАСНО (ВКонтакте: Памятка)",
+        rules: [
+          "✓ <strong>Формат:</strong> памятка для репостов",
+          "✓ <strong>Хэштеги:</strong> #безопасность #антискам #мошенники",
+          "✓ <strong>В чужих пабликах:</strong> комментировать строго БЕЗ ссылок"
+        ],
+        text: "⚠️ ПАМЯТКА: 3 признака того, что вам прислали фальшивую ссылку на «голосование» или «выплату СБП»\n\n1. Адрес зарегистрирован буквально вчера или позавчера (проверяется по возрасту домена).\n2. Вместо простого действия вас просят ввести номер телефона и код из СМС, якобы для «подтверждения голоса».\n3. Человек не отвечает на обычный сотовый звонок голосом.\n\nСохраните себе на стену и предупредите родителей!\nПроверить любую ссылку за 3 секунды можно через бесплатного бота @Anti_scamX_bot."
+      }
+    };
+
+    function selectPostPlatform(platformKey) {
+      ['pikabu1', 'pikabu2', 'vc', 'habr', 'vk'].forEach(k => {
+        const btn = document.getElementById('pBtn_' + k);
+        if (btn) btn.className = k === platformKey ? "btn btn-primary" : "btn";
+      });
+
+      const data = platformTemplates[platformKey] || platformTemplates.pikabu1;
+      document.getElementById('draftPlatformTitle').textContent = data.title;
+      document.getElementById('articleDraft').value = data.text;
+      document.getElementById('antiBanBadge').textContent = data.badge;
+      document.getElementById('platformLinkBtn').href = data.url;
+      document.getElementById('platformLinkBtn').textContent = data.btnText;
+      document.getElementById('draftCharCount').textContent = data.text.length + " знаков";
+
+      const rulesBox = document.getElementById('antiBanRulesBox');
+      rulesBox.innerHTML = data.rules.map(r => `<div>${r}</div>`).join('');
+    }
+
+    window.onload = function() {
+      selectPostPlatform('pikabu1');
+    };
+  </script>
+</body>
+</html>

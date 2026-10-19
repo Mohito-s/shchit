@@ -1,0 +1,40 @@
+# === 1. СЕКРЕТЫ И ОКРУЖЕНИЕ (ZERO-LEAK) ===
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+
+# === 2. ПИТОН, ЗАВИСИМОСТИ И КЭШ ===
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# === 3. ПРИВАТНЫЕ АГЕНТЫ, ПРОМПТЫ, ТАКТИКИ И ТРЕКЕРЫ (PRIVACY PROMPTING) ===
+.agents/
+.agent/
+_agents/
+_agent/
+AGENTS.md
+WORKLOG_*.md
+PROGRESS_TRACKER.md
+PLAYBOOK_*.md
+*.prompt
+prompt_*.txt
+
+# === 4. ТЕСТЫ, ЛОГИ И СИСТЕМНЫЙ МУСОР ===
+*.log
+test-results/
+playwright-report/
+.system_generated/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
