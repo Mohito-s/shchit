@@ -1,5 +1,7 @@
+from __future__ import annotations
 import io
 import os
+from typing import Optional
 from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, HTTPException, Header, Query
 from fastapi.responses import HTMLResponse, PlainTextResponse
@@ -24,7 +26,7 @@ PUBLIC_PATH = BASE_DIR / "public"
 
 class ScanUrlRequest(BaseModel):
     url_or_domain: str
-    inn: str | None = None
+    inn: Optional[str] = None
 
 
 class CommentReplyRequest(BaseModel):
@@ -43,8 +45,8 @@ async def serve_mini_app():
 
 @app.get("/admin", response_class=HTMLResponse)
 async def serve_admin_app(
-    key: str | None = Query(None),
-    x_admin_key: str | None = Header(None, alias="X-Admin-Key")
+    key: Optional[str] = Query(None),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
 ):
     """
     Контур 2: Изолированная личная CRM Романа (Zero-Trust).
@@ -99,8 +101,8 @@ async def api_scan_pdf_in_ram(file: UploadFile = File(...)):
 @app.post("/api/admin/comments/reply")
 async def api_reply_to_comment(
     req: CommentReplyRequest,
-    x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
-    key: str | None = Query(None)
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    key: Optional[str] = Query(None)
 ):
     provided_key = x_admin_key or key
     if not provided_key or provided_key != ADMIN_SECRET_KEY:
