@@ -35,7 +35,7 @@ logger = logging.getLogger("telegram_bot")
 async def tg_request(client: httpx.AsyncClient, method: str, payload: dict | None = None) -> dict | None:
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/{method}"
     try:
-        res = await client.post(url, json=payload or {}, timeout=15.0)
+        res = await client.post(url, json=payload or {}, timeout=35.0)
         data = res.json()
         if data.get("ok"):
             return data.get("result")
@@ -255,7 +255,7 @@ async def analyze_and_reply_pdf(client: httpx.AsyncClient, chat_id: int, doc_inf
     download_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
 
     try:
-        res = await client.get(download_url, timeout=30.0)
+        res = await client.get(download_url, timeout=45.0)
         raw_bytes = res.content
         ram_buffer = io.BytesIO(raw_bytes)
         reader = PdfReader(ram_buffer)
@@ -343,7 +343,7 @@ async def run_bot_polling():
     logger.info("Запуск Telegram бота @Anti_scamX_bot...")
     transport = httpx.AsyncHTTPTransport(proxy=PROXY_URL) if PROXY_URL else None
     
-    async with httpx.AsyncClient(transport=transport, timeout=30.0) as client:
+    async with httpx.AsyncClient(transport=transport, timeout=45.0) as client:
         offset = 0
         while True:
             try:
