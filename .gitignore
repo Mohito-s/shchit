@@ -18,10 +18,19 @@ __pycache__/
 .Python
 
 # === 3. ПРИВАТНЫЕ АГЕНТЫ, ПРОМПТЫ, ТАКТИКИ И ТРЕКЕРЫ (PRIVACY PROMPTING) ===
+*.md
+*.MD
+!README.md
+!readme.md
+!LEGAL_OFERTA_152FZ.md
 .agents/
 .agent/
 _agents/
 _agent/
+.opencode/
+.gemini/
+.cursor/
+.claude/
 AGENTS.md
 WORKLOG_*.md
 PROGRESS_TRACKER.md
