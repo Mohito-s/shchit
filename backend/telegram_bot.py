@@ -7,6 +7,7 @@ backend/telegram_bot.py
 - Читает PDF-документы прямо в чате строго в оперативной памяти (152-ФЗ Zero-Storage) и находит скрытые навязанные услуги автосалонов/банков.
 - Поддерживает опциональный TELEGRAM_PROXY_URL при запуске в РФ.
 """
+from __future__ import annotations
 import os
 import io
 import re
