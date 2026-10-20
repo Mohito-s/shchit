@@ -29,9 +29,13 @@ async def check_target_in_shchit(domain_or_url: str, inn: str | None = None) -> 
         ),
     }
 
+    is_inn_only = bool(re.match(r"^\d{10}$|^\d{12}$", domain_or_url.strip()))
+    if is_inn_only and not inn:
+        inn = domain_or_url.strip()
+
     async with httpx.AsyncClient(timeout=6.0) as client:
-        # 1. 2IP.io WHOIS API
-        if TWO_IP_TOKEN != "demo_token":
+        # 1. 2IP.io WHOIS API (только для доменов и URL)
+        if not is_inn_only and TWO_IP_TOKEN != "demo_token":
             try:
                 r_whois = await client.get(
                     f"https://api.2ip.io/whois/{domain_or_url}",
@@ -41,8 +45,8 @@ async def check_target_in_shchit(domain_or_url: str, inn: str | None = None) -> 
             except Exception as exc:
                 results["whois_2ip"] = {"error": str(exc)}
 
-        # 2. Yandex Safe Browsing API v4
-        if YANDEX_SB_KEY != "demo_key":
+        # 2. Yandex Safe Browsing API v4 (только для доменов и URL)
+        if not is_inn_only and YANDEX_SB_KEY != "demo_key":
             ysb_payload = {
                 "client": {"clientId": "shchit-max-bot", "clientVersion": "1.0"},
                 "threatInfo": {
